@@ -1,35 +1,20 @@
 import asyncio
 import shlex
-from datetime import datetime
-from typing import Dict, Optional, Union
 
-from asyncwhois.errors import NotFoundError, QueryError
-from asyncwhois.parser import WhoIsParser
+from asyncwhois.errors import QueryError
+from whois_parser import WhoisParser
 
 from . import schemas
 
 
-def build_parser(hostname: str) -> WhoIsParser:
-    tld = hostname.split(".")[-1]
-    return WhoIsParser(tld)
+def parse(raw_text: str, hostname: str) -> schemas.WhoisRecord:
+    parser = WhoisParser()
+    record = parser.parse(raw_text, hostname=hostname)
+
+    return schemas.WhoisRecord.parse_obj(record.to_dict())
 
 
-def parse(raw: str, hostname: str) -> schemas.ParsedWhoisResult:
-    output: Dict[str, Optional[Union[str, datetime]]] = {
-        "hostname": hostname,
-        "raw": raw,
-    }
-    try:
-        parser = build_parser(hostname)
-        parser.parse(raw)
-        output.update(parser.parser_output)
-    except NotFoundError:
-        pass
-
-    return schemas.ParsedWhoisResult.parse_obj(output)
-
-
-async def whois(hostname: str, timeout: float = 3.0) -> schemas.ParsedWhoisResult:
+async def whois(hostname: str, timeout: float = 3.0) -> schemas.WhoisRecord:
     # open a new process for "whois" command
     cmd = f"whois {shlex.quote(hostname)}"
     proc = await asyncio.create_subprocess_shell(

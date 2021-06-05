@@ -11,5 +11,5 @@ from app.whois import whois
 @pytest.mark.asyncio
 async def test_whois(hostname: str):
     res = await whois(hostname)
-    assert isinstance(res, schemas.ParsedWhoisResult)
-    assert res.raw != ""
+    assert isinstance(res, schemas.WhoisRecord)
+    assert res.raw_text != ""
