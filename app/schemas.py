@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from humps import camelize
 from pydantic import BaseModel
@@ -11,21 +11,30 @@ class APIModel(BaseModel):
         allow_population_by_field_name = True
 
 
-class ParsedWhoisResult(APIModel):
-    hostname: str
-    raw: str
-    status: List[str]
+class Contact(APIModel):
+    organization: Optional[str] = None
+    email: Optional[str] = None
+    name: Optional[str] = None
+    telephone: Optional[str] = None
+
+
+class Abuse(APIModel):
+    email: Optional[str] = None
+    telephone: Optional[str] = None
+
+
+class WhoisRecord(APIModel):
+    raw_text: str
+
+    tech: Contact
+    admin: Contact
+    registrant: Contact
+
+    statuses: List[str]
     name_servers: List[str]
 
-    created: Optional[datetime] = None
-    updated: Optional[datetime] = None
-    expires: Optional[datetime] = None
-    registrar: Optional[str] = None
-    registrant_name: Optional[str] = None
-    registrant_organization: Optional[str] = None
-    registrant_address: Optional[str] = None
-    registrant_city: Optional[str] = None
-    registrant_state: Optional[str] = None
-    registrant_zipcode: Optional[str] = None
-    registrant_country: Optional[str] = None
-    dnssec: Optional[str] = None
+    domain: Optional[str] = None
+
+    expires_at: Optional[Union[datetime, str]] = None
+    registered_at: Optional[Union[datetime, str]] = None
+    updated_at: Optional[Union[datetime, str]] = None

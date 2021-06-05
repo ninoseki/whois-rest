@@ -17,8 +17,8 @@ def validate_hostname(hostname: str) -> bool:
     return True
 
 
-@router.get("/{hostname}", response_model=schemas.ParsedWhoisResult)
-async def query_whois(hostname: str) -> schemas.ParsedWhoisResult:
+@router.get("/{hostname}", response_model=schemas.WhoisRecord)
+async def query_whois(hostname: str) -> schemas.WhoisRecord:
     try:
         validate_hostname(hostname)
     except ValidationError:
