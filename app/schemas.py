@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 from humps import camelize
 from pydantic import BaseModel
@@ -30,8 +30,8 @@ class WhoisRecord(APIModel):
     admin: Contact
     registrant: Contact
 
-    statuses: List[str]
-    name_servers: List[str]
+    statuses: list[str]
+    name_servers: list[str]
 
     domain: Optional[str] = None
 
