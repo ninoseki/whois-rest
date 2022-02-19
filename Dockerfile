@@ -9,8 +9,7 @@ RUN apt-get update \
 
 WORKDIR /whois-rest
 
-COPY pyproject.toml /whois-rest
-COPY poetry.lock /whois-rest
+COPY pyproject.toml poetry.lock gunicorn.conf.py /whois-rest/
 COPY app /whois-rest/app
 
 RUN pip3 install poetry \
@@ -21,4 +20,4 @@ ENV PORT 8000
 
 EXPOSE $PORT
 
-CMD uvicorn --host 0.0.0.0 --port $PORT app:app
+CMD gunicorn -k uvicorn.workers.UvicornWorker app:app
