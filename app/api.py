@@ -18,7 +18,7 @@ def validate_hostname(hostname: str) -> bool:
 
 
 @router.get("/{hostname}", response_model=schemas.WhoisRecord)
-async def query_whois(hostname: str) -> schemas.WhoisRecord:
+async def query_whois(hostname: str, *, timeout: float = 5.0) -> schemas.WhoisRecord:
     try:
         validate_hostname(hostname)
     except ValidationError:
@@ -27,4 +27,4 @@ async def query_whois(hostname: str) -> schemas.WhoisRecord:
             detail=f"{hostname} is not a valid input. An IP address or a domain is allowed as an input.",
         )
 
-    return await whois(hostname)
+    return await whois(hostname, timeout)
